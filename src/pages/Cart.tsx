@@ -13,6 +13,8 @@ import {
 import CartItem from '../components/CartItem';
 import { deepCopy } from '../utils';
 import { useNavigate } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import service from '../services';
 
 const Cart = () => {
   const { cart, updateCart } = useCartContext();
@@ -21,6 +23,16 @@ const Cart = () => {
   );
   const navigate = useNavigate();
   const toast = useToast();
+
+  const {
+    data: branchData,
+    isPending: isBranchDataPending,
+    isError: isBranchDataError,
+  } = useQuery({
+    queryKey: ['branch', cart?.branchId],
+    queryFn: () => service.getBranch(cart?.branchId!),
+    enabled: !!cart?.branchId,
+  });
 
   const handleQuantity = (type: TType, id: TId) => {
     const newCartCopy = deepCopy(newCart!);
@@ -56,10 +68,12 @@ const Cart = () => {
 
   return (
     <Box pos={'relative'} h={'full'} overflow={'hidden'}>
-      <Heading size={'sm'}> Cart</Heading>
+      <Heading size={'md'}> Cart</Heading>
       {newCart && newCart.length > 0 ? (
         <Box h={'calc(100% - 6rem)'} overflow={'auto'}>
-          branchId:{cart?.branchId}
+          <Text fontWeight={'bold'}>
+            branchId:{branchData?.data.data.branchName}
+          </Text>
           {newCart?.map((item) => (
             <Box key={item.item.id}>
               <CartItem

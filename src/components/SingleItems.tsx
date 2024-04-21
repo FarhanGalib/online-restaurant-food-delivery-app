@@ -95,6 +95,7 @@ const SingleItems = ({
           type='number'
           value={itemQuantity}
           isDisabled={!isFoodAdded}
+          readOnly
           onChange={({ target }) => setItemQuantity(Number(target.value))}
         />
         <IconButton

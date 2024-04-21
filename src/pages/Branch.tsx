@@ -16,7 +16,7 @@ import {
   TabIndicator,
   TabList,
   Tabs,
-  Text
+  Text,
 } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -223,6 +223,7 @@ const Branch = () => {
                       textAlign={'center'}
                       type='number'
                       value={itemQuantity}
+                      readOnly
                       onChange={({ target }) =>
                         setItemQuantity(Number(target.value))
                       }
@@ -242,15 +243,18 @@ const Branch = () => {
                     Frequently Order With
                   </Heading>
                   <Stack overflow={'auto'} h={'calc(100vh - 400px)'} gap={3}>
-                    {dipsData?.data?.data.map((food) => (
-                      <SingleItems
-                        key={food.id}
-                        food={food}
-                        cart={tempCart}
-                        setCart={setTempCart}
-                        isFoodAdded={!!itemQuantity}
-                      />
-                    ))}
+                    {dipsData?.data?.data.map((food) => {
+                      if (food.id === foodItem.id) return;
+                      return (
+                        <SingleItems
+                          key={food.id}
+                          food={food}
+                          cart={tempCart}
+                          setCart={setTempCart}
+                          isFoodAdded={!!itemQuantity}
+                        />
+                      );
+                    })}
                   </Stack>
                 </Box>
               </Container>

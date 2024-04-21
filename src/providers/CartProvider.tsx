@@ -27,9 +27,6 @@ const CartProvider = ({ children }: PropsWithChildren) => {
   }, [cart]);
 
   const handleAddToCart: TAddToCart = (branchId, item) => {
-    console.log('handleAddToCart = ', item);
-
-    console.log(branchId, item);
     if (cart?.branchId != branchId) {
       setCart({ branchId: branchId, cart: item });
     } else {

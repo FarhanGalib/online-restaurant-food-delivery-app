@@ -1,12 +1,31 @@
-import { Box, Container, Image, Text } from '@chakra-ui/react';
-import React, { PropsWithChildren, useEffect } from 'react';
+import {
+  Box,
+  Container,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Icon,
+  IconButton,
+  Image,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import styles from './BaseLayout.module.css';
 import { useCartContext } from '../providers/CartProvider';
 import { useNavigate } from 'react-router';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import { set } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
 const BaseLayout = ({ children }: PropsWithChildren) => {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { cart } = useCartContext();
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   console.log('cart from baseLayout = ', cart);
 
@@ -16,10 +35,41 @@ const BaseLayout = ({ children }: PropsWithChildren) => {
 
   return (
     <Box h='100vh'>
-      <Box h='3rem' bg={'primary'} pos='relative' zIndex={1}>
+      <Drawer placement={'left'} onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader borderBottomWidth='1px'>Fooddify</DrawerHeader>
+          <DrawerBody display={'flex'} flexDirection={'column'} gap={2}>
+            <Link to='/my-order' onClick={onClose}>
+              My Orders
+            </Link>
+            <Link to='/cart' onClick={onClose}>
+              Cart
+            </Link>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+      <Box
+        h='3rem'
+        bg={'primary'}
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'space-between'}
+        pos='relative'
+        px={2}
+        zIndex={1}
+      >
+        <IconButton
+          colorScheme=''
+          aria-label='sidebar'
+          icon={<HamburgerIcon />}
+          onClick={onOpen}
+        />
         <Box
+          className={'hello'}
+          mx={2}
           h={'full'}
-          mr={'32px'}
           display={'flex'}
           alignItems={'center'}
           justifyContent={'end'}

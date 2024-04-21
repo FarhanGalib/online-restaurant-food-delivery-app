@@ -60,6 +60,7 @@ const CartItem = ({ product, tempCart, handleQuantity }: CartItemProps) => {
           size={'sm'}
           textAlign={'center'}
           type='number'
+          readOnly
           value={itemQuantity}
           onChange={(e) => setItemQuantity(Number(e.target.value))}
         />
