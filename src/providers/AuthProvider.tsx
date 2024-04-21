@@ -16,7 +16,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     setTimeout(() => {
       setToken('sdfsfdfdsf');
-    }, 2000);
+    }, 0);
   }, []);
   if (!token) return <div>Loading</div>;
   return (

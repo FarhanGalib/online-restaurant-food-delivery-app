@@ -1,11 +1,11 @@
 import _axios, {
   Axios,
   AxiosError,
-  isAxiosError,
   AxiosResponse,
   AxiosHeaderValue,
   RawAxiosRequestHeaders,
   InternalAxiosRequestConfig,
+  isAxiosError,
 } from 'axios';
 
 type CommonRequestHeadersList =
@@ -14,8 +14,7 @@ type CommonRequestHeadersList =
   | 'User-Agent'
   | 'Content-Encoding'
   | 'Authorization'
-  | 'Content-Type'
-  | string;
+  | 'Content-Type';
 
 class AxiosClient {
   axios: Axios;
@@ -24,9 +23,7 @@ class AxiosClient {
     this.axios = _axios.create({
       baseURL,
       timeout,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     });
 
     this.axios.interceptors.request.use(this.interceptRequest);
@@ -41,8 +38,12 @@ class AxiosClient {
   }
 
   interceptSuccess(response: AxiosResponse) {
-    return response.data;
+    return response;
   }
+
+  // interceptError(error: AxiosError) {
+  //   return error;
+  // }
 
   interceptError(error: AxiosError) {
     if (isAxiosError(error)) {
