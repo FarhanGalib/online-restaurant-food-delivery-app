@@ -70,10 +70,8 @@ const Cart = () => {
     <Box pos={'relative'} h={'full'} overflow={'hidden'}>
       <Heading size={'md'}> Cart</Heading>
       {newCart && newCart.length > 0 ? (
-        <Box h={'calc(100% - 6rem)'} overflow={'auto'}>
-          <Text fontWeight={'bold'}>
-            branchId:{branchData?.data.data.branchName}
-          </Text>
+        <Box h={'calc(100% - 6rem)'} overflow={'auto'} mt={3}>
+          <Text fontWeight={'bold'}>{branchData?.data.data.branchName}</Text>
           {newCart?.map((item) => (
             <Box key={item.item.id}>
               <CartItem

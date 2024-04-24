@@ -26,7 +26,7 @@ const MyOrders = () => {
     const ordersString = localStorage.getItem('foodAppOrder');
     let orders;
     if (ordersString) {
-      orders = JSON.parse(ordersString);
+      orders = JSON.parse(ordersString).reverse();
       setOrders(orders);
     }
   };

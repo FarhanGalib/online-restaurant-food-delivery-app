@@ -6,10 +6,13 @@ import {
   useEffect,
   useState,
 } from 'react';
+import OverrideCartModal from '../components/OverrideCartModal';
 
 const CartContext = createContext<TCartContext | null>(null);
 const CartProvider = ({ children }: PropsWithChildren) => {
   const [cart, setCart] = useState<TCart | undefined>();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [overrideData, setOverrideData] = useState<TCart | undefined>();
   const toast = useToast();
 
   useEffect(() => {
@@ -28,7 +31,13 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 
   const handleAddToCart: TAddToCart = (branchId, item) => {
     if (cart?.branchId != branchId) {
-      setCart({ branchId: branchId, cart: item });
+      if (cart?.branchId) {
+        setModalOpen(true);
+        setOverrideData({ branchId: branchId, cart: item });
+      } else {
+        setCart({ branchId: branchId, cart: item });
+        showSuccessToaster();
+      }
     } else {
       const copyCart = { ...cart };
       item?.forEach((foodItem) => {
@@ -47,7 +56,11 @@ const CartProvider = ({ children }: PropsWithChildren) => {
         index = undefined;
         foundItem = undefined;
       });
+      showSuccessToaster();
     }
+  };
+  
+  const showSuccessToaster = () => {
     toast({
       title: 'Successfully added to the cart!',
       position: 'top',
@@ -79,7 +92,16 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     cart?.cart.reduce((total, item) => total + item.quantity, 0);
 
   const getTotalAmount = () =>
-    cart?.cart.reduce((total, item) => total + item.item.price, 0);
+    cart?.cart.reduce(
+      (total, item) => total + item.item.price * item.quantity,
+      0
+    );
+
+  const handleOverride = () => {
+    !!overrideData && setCart({ ...overrideData });
+    setModalOpen(false);
+    showSuccessToaster();
+  };
 
   return (
     <CartContext.Provider
@@ -92,6 +114,14 @@ const CartProvider = ({ children }: PropsWithChildren) => {
         getTotalAmount,
       }}
     >
+      <OverrideCartModal
+        isOpen={isModalOpen}
+        headerTitle='Override Cart'
+        bodyText='You can not add food from different brach at the same time. If you do so, it will override the previous card. Are you sure want to override?'
+        confirmBtnText='Yes, override'
+        onClose={() => setModalOpen(false)}
+        handleAction={handleOverride}
+      />
       {children}
     </CartContext.Provider>
   );

@@ -4,12 +4,10 @@ import ChakraUIProvider from './ChakraProvider';
 import { Outlet } from 'react-router';
 import BaseLayout from '../layout/BaseLayout';
 import CartProvider from './CartProvider';
-import { Toaster } from 'react-hot-toast';
 
 const Provider = () => {
   return (
     <ChakraUIProvider>
-      <Toaster />
       <CartProvider>
         <BaseLayout>
           <QueryProvider>

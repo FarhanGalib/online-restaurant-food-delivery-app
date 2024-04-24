@@ -13,6 +13,7 @@ const Home = () => {
   const [branches, setBranches] = useState([] as TBranches);
   const [locations, setLocations] = useState([] as TLocation[]);
   const navigate = useNavigate();
+
   const { data, isPending, isError } = useQuery({
     queryKey: ['Branches', branchesId],
     queryFn: () => service.getBranches({ branchesId }),
@@ -59,14 +60,7 @@ const Home = () => {
       <Box mt='5'>
         {!isPending &&
           branches?.map((branch) => (
-            <Box
-              mb='4'
-              key={branch.id}
-              onClick={() => navigate(`branch/${branch.id}`)}
-              _hover={{ cursor: 'pointer' }}
-            >
-              <BranchCard branch={branch} />
-            </Box>
+            <BranchCard key={branch.id} branch={branch} />
           ))}
       </Box>
     </Container>

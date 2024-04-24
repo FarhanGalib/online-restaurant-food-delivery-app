@@ -115,8 +115,17 @@ type TCartContext = {
   getTotalAmount: TTotalAmount;
 };
 
+type TOrderStatus =
+  | 'Pending'
+  | 'Preparing'
+  | 'ReadyForDelivery'
+  | 'OnTheWay'
+  | 'Delivered'
+  | 'AtYourDoor';
+
 type TOrder = {
   id: TId;
+  status: TOrderStatus;
   deliveryAddress: TAddress;
   orderedItems: TCart;
   totalItems: number;

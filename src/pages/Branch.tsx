@@ -1,5 +1,8 @@
 import { MinusIcon, SmallAddIcon } from '@chakra-ui/icons';
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Card,
@@ -26,6 +29,8 @@ import FoodItemCard from '../components/FoodItemCard';
 import SingleItems from '../components/SingleItems';
 import { useCartContext } from '../providers/CartProvider';
 import service from '../services';
+import { getCurrentTimeInMinutes, parseTimeInMinutes } from '../utils';
+import { log } from 'console';
 
 const Branch = () => {
   const [categoryId, setCategoryId] = useState('1');
@@ -35,6 +40,8 @@ const Branch = () => {
   const [itemQuantity, setItemQuantity] = useState(0);
   const [tempCart, setTempCart] = useState([] as TCartFoodItem[]);
   const [tempCartItem, setTempCartItem] = useState<TCartFoodItem | undefined>();
+  const [isBranchClosed, setBranchClosed] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const { id } = useParams();
   const { cart, handleAddToCart } = useCartContext();
 
@@ -81,6 +88,53 @@ const Branch = () => {
     if (!foodItemsData) return;
     setFoodList(foodItemsData.data.data);
   }, [foodItemsData]);
+
+  useEffect(() => {
+    handleBranchClosing();
+  }, [branchData]);
+
+  // useEffect(() => {
+  //   const cartString = localStorage.getItem('foodAppCart');
+  //   if (cartString) setTempCart(JSON.parse(cartString));
+  // }, []);
+
+  const getCurrentOpeningClosingStringFromData = (
+    currentTime = new Date(),
+    openingTimes: Record<TDay, string>
+  ) => {
+    return openingTimes[
+      Object.keys(openingTimes)[currentTime.getDay()] as TDay
+    ];
+  };
+
+  const handleBranchClosing = () => {
+    if (!branchData) return;
+    const currentTime = new Date();
+    const currentTimeInMinute = getCurrentTimeInMinutes(currentTime);
+    const openingClosingTimeString = getCurrentOpeningClosingStringFromData(
+      currentTime,
+      branchData?.data.data.open!
+    );
+    const [startingTimeInMinute, closingTimeInMinute] = openingClosingTimeString
+      .split('-')
+      .map((time) => parseTimeInMinutes(time));
+
+    if (currentTimeInMinute < startingTimeInMinute) {
+      setBranchClosed(true);
+      setIsClosing(false);
+    } else if (
+      currentTimeInMinute >= closingTimeInMinute - 30 &&
+      currentTimeInMinute < closingTimeInMinute
+    ) {
+      setBranchClosed(false);
+      setIsClosing(true);
+      console.log('last 30 mins');
+    } else {
+      setBranchClosed(false);
+      setIsClosing(false);
+    }
+    console.log(currentTimeInMinute, startingTimeInMinute, closingTimeInMinute);
+  };
 
   const handleTabs = (id: number) => {
     let selectedCategoryId = id + 1;
@@ -148,6 +202,19 @@ const Branch = () => {
 
   return (
     <Box>
+      {/* {getIsBranchClosing() && (
+        <Box
+          pos={'absolute'}
+          bg={'black'}
+          top={'-1rem'}
+          bottom={'-1rem'}
+          left={'-1rem'}
+          right={'-1rem'}
+          zIndex={1}
+          opacity={0.3}
+          cursor={'not-allowed'}
+        />
+      )} */}
       <Card variant='none'>
         <CardHeader p={0}>
           <Image
@@ -157,6 +224,17 @@ const Branch = () => {
             src={branchData?.data.data.image}
             alt=''
           />
+
+          {(isClosing || isBranchClosed) && (
+            <Alert status='error'>
+              <AlertIcon />
+              <AlertTitle>
+                {isClosing &&
+                  'Restaurant is closing soon. Not receiving any orders.'}
+                {isBranchClosed && 'Restaurant is closed.'}
+              </AlertTitle>
+            </Alert>
+          )}
         </CardHeader>
         <CardBody p='0' pt='3'>
           <Heading size={'sm'}>{branchData?.data.data.branchName}</Heading>
@@ -178,9 +256,11 @@ const Branch = () => {
               bg='#F4051D'
               borderRadius='3px'
             />
+
             {foodList.map((food) => (
               <FoodItemCard
                 key={food.id}
+                isDisabled={true}
                 foodItem={food}
                 handleSheet={handleSheet}
               />
@@ -198,7 +278,7 @@ const Branch = () => {
                 height={150}
                 objectFit={'cover'}
                 w={'full'}
-              ></Image>
+              />
               <Container>
                 <HStack justify={'space-between'} align={'center'} mt={3}>
                   <Heading size={'sm'} textTransform={'capitalize'}>
@@ -223,7 +303,6 @@ const Branch = () => {
                       textAlign={'center'}
                       type='number'
                       value={itemQuantity}
-                      readOnly
                       onChange={({ target }) =>
                         setItemQuantity(Number(target.value))
                       }
@@ -243,18 +322,15 @@ const Branch = () => {
                     Frequently Order With
                   </Heading>
                   <Stack overflow={'auto'} h={'calc(100vh - 400px)'} gap={3}>
-                    {dipsData?.data?.data.map((food) => {
-                      if (food.id === foodItem.id) return;
-                      return (
-                        <SingleItems
-                          key={food.id}
-                          food={food}
-                          cart={tempCart}
-                          setCart={setTempCart}
-                          isFoodAdded={!!itemQuantity}
-                        />
-                      );
-                    })}
+                    {dipsData?.data?.data.map((food) => (
+                      <SingleItems
+                        key={food.id}
+                        food={food}
+                        cart={tempCart}
+                        setCart={setTempCart}
+                        isFoodAdded={!!itemQuantity}
+                      />
+                    ))}
                   </Stack>
                 </Box>
               </Container>

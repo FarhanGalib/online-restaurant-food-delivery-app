@@ -12,6 +12,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useCartContext } from '../providers/CartProvider';
 import { useNavigate } from 'react-router';
 import { handleOrderId } from '../utils';
+import { orderStatus } from '../const';
 
 const ConfirmOrder = () => {
   const [address, setAddress] = useState<string>('');
@@ -34,6 +35,7 @@ const ConfirmOrder = () => {
       const newOrderId = handleOrderId(orders);
       orders.push({
         id: newOrderId,
+        status: orderStatus.PENDING,
         deliveryAddress: getValues('address'),
         orderedItems: cart,
         totalItems: getTotalItems(),
@@ -46,6 +48,7 @@ const ConfirmOrder = () => {
         JSON.stringify([
           {
             id: '1',
+            status: 'Pending',
             deliveryAddress: getValues('address'),
             orderedItems: cart,
             totalItems: getTotalItems(),

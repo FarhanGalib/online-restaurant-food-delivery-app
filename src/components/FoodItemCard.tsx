@@ -11,9 +11,14 @@ import {
 
 interface PropsInterface {
   foodItem: TFoodItem;
+  isDisabled: boolean;
   handleSheet: (foodItem: TFoodItem) => void;
 }
-const FoodItemCard = ({ foodItem, handleSheet }: PropsInterface) => {
+const FoodItemCard = ({
+  foodItem,
+  isDisabled = false,
+  handleSheet,
+}: PropsInterface) => {
   return (
     <Card
       display={'flex'}
@@ -45,6 +50,7 @@ const FoodItemCard = ({ foodItem, handleSheet }: PropsInterface) => {
         size={'sm'}
         aria-label='add'
         icon={<SmallAddIcon />}
+        isDisabled={isDisabled}
         onClick={() => {
           handleSheet(foodItem);
         }}

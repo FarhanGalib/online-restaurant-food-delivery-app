@@ -42,6 +42,8 @@ class Service extends AxiosClient {
   getBranches(params: {
     branchesId: string[];
   }): AxiosPromise<TSuccess<TBranches>> {
+    console.log('Params = ', params);
+
     return this.axios.get('/branches', { params });
   }
 

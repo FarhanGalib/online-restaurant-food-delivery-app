@@ -10,6 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { isTimeInRange } from '../utils';
+import { useNavigate } from 'react-router';
 
 interface BranchCardProps {
   branch: TBranch;
@@ -17,13 +18,21 @@ interface BranchCardProps {
 
 const BranchCard = ({ branch }: BranchCardProps) => {
   const currentDay = new Date();
+  const navigate = useNavigate();
   const openTime =
     branch.open[Object.keys(branch.open)[currentDay.getDay()] as TDay];
 
   const [isOpen, startTimeStr, endTimeStr] = isTimeInRange(openTime);
 
   return (
-    <Card overflow='hidden' variant='outline'>
+    <Card
+      overflow='hidden'
+      variant='outline'
+      mb='4'
+      key={branch.id}
+      onClick={() => navigate(`branch/${branch.id}`)}
+      _hover={{ cursor: 'pointer' }}
+    >
       <CardHeader p='0'>
         <Image
           height={150}

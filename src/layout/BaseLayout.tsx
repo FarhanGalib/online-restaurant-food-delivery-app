@@ -23,15 +23,15 @@ import { Link } from 'react-router-dom';
 
 const BaseLayout = ({ children }: PropsWithChildren) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const { cart } = useCartContext();
+  const { cart, getTotalItems } = useCartContext();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   console.log('cart from baseLayout = ', cart);
 
-  const getTotalItem = () => {
-    return cart?.cart.reduce((total, item) => item.quantity + total, 0) || '0';
-  };
+  // const getTotalItem = () => {
+  //   return cart?.cart.reduce((total, item) => item.quantity + total, 0) || '0';
+  // };
 
   return (
     <Box h='100vh'>
@@ -96,7 +96,7 @@ const BaseLayout = ({ children }: PropsWithChildren) => {
             top={'2px'}
             right={'-10px'}
           >
-            <Text fontSize={'xs'}>{getTotalItem()}</Text>
+            <Text fontSize={'xs'}>{getTotalItems() ?? 0}</Text>
           </Box>
         </Box>
       </Box>

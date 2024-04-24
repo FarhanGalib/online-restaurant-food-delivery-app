@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import service from '../services';
+import { orderStatus } from '../const';
 interface OrderProps {
   order: TOrder;
   handleModal: (id: TId) => void;
@@ -33,7 +34,7 @@ const Order = ({ order, handleModal }: OrderProps) => {
         <AccordionButton>
           <Box as='span' flex='1' textAlign='left'>
             <Text fontWeight={'bold'}>{branchData?.data.data.branchName}</Text>
-            <Text>Status: Pending</Text>
+            <Text>Status: {order.status}</Text>
             <Text>Total Items: {order.totalItems}</Text>
             <Text>Total Amount:{order.totalAmount} TK</Text>
           </Box>
@@ -69,9 +70,11 @@ const Order = ({ order, handleModal }: OrderProps) => {
             </VStack>
           </Card>
         ))}
-        <Button w={'full'} mt={3} onClick={() => handleModal(order.id)}>
-          Cancel Order
-        </Button>
+        {orderStatus.PENDING === 'Pending' && (
+          <Button w={'full'} mt={3} onClick={() => handleModal(order.id)}>
+            Cancel Order
+          </Button>
+        )}
       </AccordionPanel>
     </AccordionItem>
   );
