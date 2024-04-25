@@ -45,10 +45,13 @@ export function isTimeInRange(timeString: string) {
   // const endTimeInMinutes = parseTime(endTimeStr);
 
   // Check if current time is within the range
-  return [
+  const isBranchOpen =
     currentTimeInMinutes >= startTimeInMinutes &&
-      currentTimeInMinutes <= endTimeInMinutes,
-    startTimeStr,
-    endTimeStr,
-  ];
+    currentTimeInMinutes <= endTimeInMinutes;
+
+  const isBranchClosing =
+    currentTimeInMinutes >= endTimeInMinutes - 30 &&
+    currentTimeInMinutes <= endTimeInMinutes;
+
+  return [isBranchOpen, isBranchClosing, startTimeStr, endTimeStr];
 }

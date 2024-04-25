@@ -91,6 +91,7 @@ const Branch = () => {
 
   useEffect(() => {
     handleBranchClosing();
+    console.log(branchData);
   }, [branchData]);
 
   // useEffect(() => {
@@ -119,7 +120,10 @@ const Branch = () => {
       .split('-')
       .map((time) => parseTimeInMinutes(time));
 
-    if (currentTimeInMinute < startingTimeInMinute) {
+    if (
+      currentTimeInMinute < startingTimeInMinute ||
+      currentTimeInMinute > closingTimeInMinute
+    ) {
       setBranchClosed(true);
       setIsClosing(false);
     } else if (
@@ -133,7 +137,12 @@ const Branch = () => {
       setBranchClosed(false);
       setIsClosing(false);
     }
-    console.log(currentTimeInMinute, startingTimeInMinute, closingTimeInMinute);
+    console.log(
+      currentTimeInMinute < startingTimeInMinute,
+      typeof currentTimeInMinute,
+      typeof startingTimeInMinute,
+      typeof closingTimeInMinute
+    );
   };
 
   const handleTabs = (id: number) => {
@@ -199,6 +208,7 @@ const Branch = () => {
     id && handleAddToCart(id, tempCart);
     handleCloseSheet();
   };
+  console.log(isClosing, isBranchClosed);
 
   return (
     <Box>
@@ -260,7 +270,7 @@ const Branch = () => {
             {foodList.map((food) => (
               <FoodItemCard
                 key={food.id}
-                isDisabled={true}
+                isDisabled={isBranchClosed || isClosing}
                 foodItem={food}
                 handleSheet={handleSheet}
               />

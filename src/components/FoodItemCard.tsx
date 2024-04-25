@@ -11,7 +11,7 @@ import {
 
 interface PropsInterface {
   foodItem: TFoodItem;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   handleSheet: (foodItem: TFoodItem) => void;
 }
 const FoodItemCard = ({
@@ -27,6 +27,8 @@ const FoodItemCard = ({
       justify={'space-between'}
       mt={3}
       p={3}
+      opacity={isDisabled ? 0.3 : 1}
+      cursor={isDisabled ? 'not-allowed' : 'initial'}
     >
       <HStack>
         <Image

@@ -22,7 +22,8 @@ const BranchCard = ({ branch }: BranchCardProps) => {
   const openTime =
     branch.open[Object.keys(branch.open)[currentDay.getDay()] as TDay];
 
-  const [isOpen, startTimeStr, endTimeStr] = isTimeInRange(openTime);
+  const [isOpen, isClosing, startTimeStr, endTimeStr] = isTimeInRange(openTime);
+  console.log(isOpen, isClosing, startTimeStr, endTimeStr);
 
   return (
     <Card
@@ -53,8 +54,8 @@ const BranchCard = ({ branch }: BranchCardProps) => {
         </HStack>
         <Text>{branch.address}</Text>
         <Text>
-          <Text as='b' color={isOpen ? 'green' : 'red'}>
-            {isOpen ? 'Open ⋅ ' : 'Closed ⋅ '}
+          <Text as='b' color={isOpen ? (!isClosing ? 'green' : 'red') : 'red'}>
+            {isOpen ? (isClosing ? 'Closing Soon. ' : 'Open ⋅ ') : 'Closed ⋅ '}
           </Text>
           {isOpen ? `Closes at ${endTimeStr}` : `Opens at ${startTimeStr}`}
         </Text>
